@@ -1,4 +1,2 @@
-src/lw-01/prelab/Chargeable.class
-src/lw-01/prelab/ColourPrint.class
-src/lw-01/prelab/MonoPrint.class
-src/lw-01/prelab/PrintJob.class
+*.class
+bin/
