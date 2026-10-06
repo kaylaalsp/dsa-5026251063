@@ -1,91 +1,57 @@
-package lw03.prelab;
+    package lw03.prelab;
+    import java.util.*;
 
-import java.util.*;
+    public class Main {
+        public static void main(String[] args) {
+            System.out.println("===== Problem 1 =====");
+            List<String> playlist = new ArrayList<>();
 
-public class Main {
-    public static void main(String[] args) {
-        System.out.println("===== Problem 1 =====");
-        List<String> playlist = new ArrayList<>();
+            Scanner sc1 = new Scanner(Main.class.getResourceAsStream("playlist.txt"));
 
-        Scanner playlistScanner = new Scanner(Main.class.getResourceAsStream("playlist.txt"));
-        while (playlistScanner.hasNext()) {
-            String command = playlistScanner.next();
+            while (sc1.hasNextLine()) {
+                String line = sc1.nextLine();
+                String[] parts = line.split(" ",2);
 
-            if (command.equals("ADD")) {
-                String song = playlistScanner.nextLine().trim();
-                playlist.add(song);
-            } else if (command.equals("REMOVE")) {
-                String song = playlistScanner.nextLine().trim();
-                playlist.remove(song);
-            } else if (command.equals("INSERT")) {
-                int index = playlistScanner.nextInt();
-                String song = playlistScanner.nextLine().trim();
-                playlist.add(index, song);
-            }
-        }
-        playlistScanner.close();
+                String operation = parts[0];
+                String song = parts[1];
 
-        System.out.println("Total songs: " + playlist.size());
-        for (int i = 0; i < playlist.size(); i++) {
-            System.out.println((i + 1) + ": " + playlist.get(i));
-        }
-
-        System.out.println("===== Problem 2 =====");
-        Set<String> participants = new LinkedHashSet<>();
-        int duplicateRegistrations = 0;
-
-        Scanner participantsScanner = new Scanner(Main.class.getResourceAsStream("participants.txt"));
-        while (participantsScanner.hasNextLine()) {
-            String name = participantsScanner.nextLine().trim();
-            if (name.isEmpty()) {
-                continue;
+                if(operation.equals("ADD")) {
+                    playlist.add(song);
+                } else if (operation.equals("INSERT")) {
+                    String[] insertData = song.split(" ",2);
+                    int index = Integer.parseInt(insertData[0]);
+                    String songName = insertData[1];
+                    playlist.add(index, songName);
+                } else if (operation.equals("REMOVE")) {
+                    playlist.remove(song);
+                }
             }
 
-            if (participants.contains(name)) {
+            sc1.close();
+            System.out.println("Total songs: " + playlist.size());
+
+            for (int i = 0; i < playlist.size(); i++) {
+                System.out.println((i + 1) + ": " + playlist.get(i));
+            }
+
+            System.out.println();
+
+            System.out.println("===== Problem 2 =====");
+            Set<String> participants = new LinkedHashSet<>();
+
+            int duplicateRegistrations = 0;
+
+            Scanner sc2 = new Scanner(Main.class.getResourceAsStream("participants.txt"));
+
+            while(sc2.hasNextLine()) {
+            String name = sc2.nextLine();
+
+            if (!participants.add(name)) {
                 duplicateRegistrations++;
-            } else {
-                participants.add(name);
             }
         }
-        participantsScanner.close();
 
-        System.out.println("Unique participants: " + participants.size());
-        int number = 1;
-        for (String name : participants) {
-            System.out.println(number + ". " + name);
-            number++;
-        }
+        sc2.close();
         System.out.println("Duplicate registrations: " + duplicateRegistrations);
-
-        System.out.println("===== Problem 3 =====");
-        Map<String, Integer> inventory = new LinkedHashMap<>();
-        int failedSales = 0;
-
-        Scanner inventoryScanner = new Scanner(Main.class.getResourceAsStream("inventory.txt"));
-        while (inventoryScanner.hasNext()) {
-            String type = inventoryScanner.next();
-            String product = inventoryScanner.next();
-            int quantity = inventoryScanner.nextInt();
-
-            if (type.equals("ADD")) {
-                if (inventory.containsKey(product)) {
-                    inventory.put(product, inventory.get(product) + quantity);
-                } else {
-                    inventory.put(product, quantity);
-                }
-            } else if (type.equals("SELL")) {
-                if (inventory.containsKey(product) && inventory.get(product) >= quantity) {
-                    inventory.put(product, inventory.get(product) - quantity);
-                } else {
-                    failedSales++;
-                }
-            }
         }
-        inventoryScanner.close();
-
-        for (String product : inventory.keySet()) {
-            System.out.println(product + ": " + inventory.get(product));
-        }
-        System.out.println("Failed sales: " + failedSales);
     }
-}
